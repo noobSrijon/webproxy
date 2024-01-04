@@ -35,9 +35,7 @@ def proxy():
   session['base_url'] = target_url
 
   if request.method == 'GET':
-    response = requests.get(
-        urljoin('https://' + extract_domain(session['base_url']),
-                request.path))
+    response = requests.get(target_url)
   elif request.method == 'POST':
     response = requests.post(target_url, data=request.form)
   headers = dict(response.headers)
