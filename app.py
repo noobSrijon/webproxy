@@ -1,4 +1,4 @@
-from flask import Flask, request, Response, session,render_template
+from flask import Flask, request, Response, session, render_template
 import requests
 from urllib.parse import urljoin, urlparse
 
@@ -30,6 +30,8 @@ def index():
 @app.route('/proxy', methods=['POST', 'GET'])
 def proxy():
   target_url = request.form.get('target_url') or request.args.get('target_url')
+  if 'https://' not in target_url:
+    target_url = 'https://' + target_url
   session['base_url'] = target_url
 
   if request.method == 'GET':
@@ -41,7 +43,6 @@ def proxy():
   headers = dict(response.headers)
   headers.pop('Transfer-Encoding', None)
   headers.pop('Content-Encoding', None)
-
 
   content = response.content.decode('utf-8')
   content = content.replace(
@@ -59,11 +60,10 @@ def proxys():
 
   response = requests.get(url)
   target_url = url
-  
+
   headers = dict(response.headers)
   headers.pop('Transfer-Encoding', None)
   headers.pop('Content-Encoding', None)
-
 
   content = response.content.decode('utf-8')
   content = content.replace(
